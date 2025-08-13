@@ -17,7 +17,8 @@ logger = logging.getLogger(__name__)
 
 class ReCaptchaField(forms.CharField):
     def __init__(self, attrs=None, *args, **kwargs):
-        if os.environ.get('RECAPTCHA_DISABLE', None) is None:
+        disable = os.environ.get('RECAPTCHA_DISABLE', '').lower() == 'true'
+        if not disable:
             self._private_key = kwargs.pop('private_key', settings.RECAPTCHA_PRIVATE_KEY)
             self._score_threshold = kwargs.pop('score_threshold', settings.RECAPTCHA_SCORE_THRESHOLD)
 
@@ -30,7 +31,7 @@ class ReCaptchaField(forms.CharField):
         # Disable the check (and allow empty field value) if we run in a unittest
         if os.environ.get('RECAPTCHA_DISABLE', '').lower() == 'true':
             try:
-                return json.loads(os.environ.get('RECAPTCHA_DISABLE', 'true'))
+                return {}
             except:
                 return {}
 
