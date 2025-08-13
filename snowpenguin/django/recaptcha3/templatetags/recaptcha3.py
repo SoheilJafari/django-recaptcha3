@@ -41,8 +41,8 @@ def recaptcha_execute(public_key=None, action_name=None, custom_callback=None):
 def return_empty_context(*args, **kwargs):
     return ''
 
-
-if not os.environ.get('RECAPTCHA_DISABLE', None):
+disable = os.environ.get('RECAPTCHA_DISABLE', '').lower() == 'true'
+if not disable:
     register.inclusion_tag(get_template('snowpenguin/recaptcha/recaptcha_init.html'))(recaptcha_init)
     register.inclusion_tag(get_template('snowpenguin/recaptcha/recaptcha_ready.html'))(recaptcha_ready)
     register.inclusion_tag(get_template('snowpenguin/recaptcha/recaptcha_execute.html'))(recaptcha_execute)
